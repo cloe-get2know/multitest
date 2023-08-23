@@ -1,0 +1,47 @@
+version: '3.1'
+services:
+  odoo:
+    container_name: odoo
+    image: odoo:16.0
+    depends_on:
+      - db
+    restart: always
+    networks:
+      - my-network
+    ports:
+      - "8069:8069"
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./odoo-custom-addons:/mnt/extra-addons
+      - ./config/odoo:/etc/odoo
+  db:
+    container_name: odoo_db
+    image: postgres:15
+    networks:
+      - my-network
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=odootesting
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+  proxy:
+    container_name: odoo_proxy
+    image: nginx:latest
+    networks:
+      - my-network
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./config/nginx/:/etc/nginx/conf.d/
+      - ./config/certbot:/etc/letsencrypt
+      - ./config/certbot/www:/var/www/certbot
+    command: "/bin/bash -c 'apt-get update && apt-get install -y certbot && apt-get install -y python3-certbot-nginx && nginx -g \"daemon off;\"'"
+volumes:
+  odoo-web-data:
+  odoo-db-data:  
+networks:
+  my-network:
