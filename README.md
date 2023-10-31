@@ -24,7 +24,7 @@ sudo git clone < repo URL >
 - **Docker Engine:** Docker Engine should be installed on your machine. It allows you to create and manage Docker containers. Run this script to install docker engine :
 
 ```bash
-cd get2knowOdoo
+cd multitenant
 sudo ./installDocker.sh
 ```
 
@@ -32,7 +32,7 @@ sudo ./installDocker.sh
 run the folloing command to start the odoo server
 
 ```bash
-cd get2knowOdoo
+cd multitenant
 sudo docker compose up -d
 ```
 
